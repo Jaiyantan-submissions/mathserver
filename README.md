@@ -33,23 +33,25 @@ Publish the website in the given URL.
 # views.py:
 
     from django.shortcuts import render
-    from .forms import PowerForm
 
     def calculate_power(request):
-        power = None
+        context={}
+        context['Power'] = ""
+        context['I'] = ""
+        context['R'] = ""
         if request.method == 'POST':
-            form = PowerForm(request.POST)
-            if form.is_valid():
-                
-                current = form.cleaned_data['current']
-                resistance = form.cleaned_data['resistance']
-
-            
-                power = (current ** 2) * resistance
-        else:
-            form = PowerForm()
-
-        return render(request, 'bulb/calculate_power.html', {'form': form, 'power': power})
+            print("POST method is used")
+            I = request.POST.get('Intensity','')
+            R = request.POST.get('Resistence','')
+            print('request=',request)
+            print('Intensity=',I)
+            print('Resistence=',R)
+            Power = int(I) * int(I) * int(R)
+            context['Power'] = Power
+            context['I'] = I
+            context['R'] = R
+            print('Power=',Power)
+        return render(request,'bulb/calculate-power.html',context)
 
 # urls.py:
     from django.urls import path
@@ -58,13 +60,6 @@ Publish the website in the given URL.
     urlpatterns = [
         path('calculate/', views.calculate_power, name='calculate_power'),
     ]
-
-# forms.py:
-    from django import forms
-
-    class PowerForm(forms.Form):
-        current = forms.FloatField(label='Current (I) in Amperes', required=True)
-        resistance = forms.FloatField(label='Resistance (R) in Ohms', required=True)
 
 # settings.py:
     """
@@ -345,29 +340,10 @@ Publish the website in the given URL.
 
 # SERVER SIDE PROCESSING:
 
-# views.py:
-    from django.shortcuts import render
-    from .forms import PowerForm
-
-    def calculate_power(request):
-        power = None
-        if request.method == 'POST':
-            form = PowerForm(request.POST)
-            if form.is_valid():
-                
-                current = form.cleaned_data['current']
-                resistance = form.cleaned_data['resistance']
-
-            
-                power = (current ** 2) * resistance
-        else:
-            form = PowerForm()
-
-        return render(request, 'bulb/calculate_power.html', {'form': form, 'power': power})
-
+![Result](image1.png)
 # HOMEPAGE:
 
-!['Result pic](output.png)
+!['Result pic](image2.png)
 
 # RESULT:
 The program for performing server side processing is completed successfully.
